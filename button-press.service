@@ -1,0 +1,21 @@
+[Unit]
+Description=GPIO27 button press logger and D-Bus broadcaster
+Documentation=file:/usr/local/bin/button_press.py
+Wants=dbus.service
+After=dbus.service local-fs.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 /usr/local/bin/button_press.py
+# Root is needed to write /var/log/button-press and to access the GPIO chip.
+User=root
+# Send print() output straight to the journal instead of buffering it.
+Environment=PYTHONUNBUFFERED=1
+Restart=on-failure
+RestartSec=2
+# The script handles SIGTERM itself and exits cleanly.
+KillSignal=SIGTERM
+TimeoutStopSec=5
+
+[Install]
+WantedBy=multi-user.target
